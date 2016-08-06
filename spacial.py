@@ -19,7 +19,7 @@ def generate_gaussian_pyramid(image, levels):
     """
 
 
-    base_layer = np.empty_like(image, dtype=np.float32)
+    base_layer = np.empty_like(image)
     base_layer = image[:]
 
     pyramid = [base_layer]
@@ -50,7 +50,8 @@ def generate_laplacian_pyramid(image, levels):
     # is the first layer of our laplacian pyramid. Next we subtract 3rd from second. etc.
     # Of course we need to scale the smaller layer up to make subtraction work.
     for i in range(levels-1):
-        layer = np.subtract(gaussian_pyramid[i], cv2.pyrUp(gaussian_pyramid[i+1])
+        size = (gaussian_pyramid[i].shape[1], gaussian_pyramid[i].shape[0])
+        layer = gaussian_pyramid[i] - cv2.pyrUp(gaussian_pyramid[i+1], dstsize=size)
         pyramid.append(layer)
 
     return pyramid
